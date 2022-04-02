@@ -60,7 +60,7 @@ function modificaciones($viaje)
                     $nuevoArrayPasajeros = cargarPasajeros($viaje->getCantMaxPasajeros());
                     $viaje->setPasajeros($nuevoArrayPasajeros);
                 } elseif ($rta == 2){ //Modifica un pasajero especifico
-
+                    $viaje->modificarUnPasajero();
                 } else {
                     echo "Opcion incorrecta.\n";
                 }

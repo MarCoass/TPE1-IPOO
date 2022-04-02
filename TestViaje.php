@@ -1,6 +1,13 @@
 <?php
 include "Viaje.php";
 
+/**
+ * Menu
+ *      Cargar informacion del viaje
+ *      Modificar sus datos
+ *      Ver sus datos
+ */
+
 $pasajeros = [
     ["nombre" => "Mar", "apellido" => "Coass", "documento" => 42969186],
     ["nombre" => "Pedro", "apellido" => "Perez", "documento" => 22349753],
@@ -12,3 +19,6 @@ $pasajeros = [
 
 $viaje = new Viaje(1, "Mendoza", 10, $pasajeros);
 echo $viaje->__toString();
+
+
+

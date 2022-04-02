@@ -1,25 +1,76 @@
 <?php
 include "Viaje.php";
 
-/**
- * Menu
- *      Cargar informacion del viaje
- *      Modificar sus datos
- *      Ver sus datos
- */
 
- /**
-  * Muestra por pantalla las opciones del menu principal
-  */
+/**
+ * Muestra por pantalla las opciones del menu principal
+ */
 function mostrarMenuPrincipal()
 {
-    echo "Menu:
+    echo "------------Menu-------------:
         1) Cargar informacion del viaje.
         2) Modificar datos del viaje.
         3) Ver datos del viaje.
         4) Cargar informacion de prueba.
         0) Salir.
     Elija una opcion: ";
+}
+
+/**
+ * Muestra por pantalla las opciones del menu de modificaciones
+ */
+function mostrarMenuModificaciones()
+{
+    echo "------------Modificaciones-------------:
+        1) Cambiar codigo.
+        2) Cambiar destino.
+        3) Cambiar cantidad maxima de pasajeros.
+        4) Cambiar informacion de pasajeros.
+        0) Volver a menu principal.
+    Elija una opcion: ";
+}
+
+function modificaciones($viaje)
+{
+    do {
+        mostrarMenuModificaciones();
+        $opcion = trim(fgets(STDIN));
+        switch ($opcion) {
+            case 1: //Cambiar codigo
+                echo "Ingrese el nuevo codigo: ";
+                $nuevoCodigo = trim(fgets(STDIN));
+                $viaje->setCodigo($nuevoCodigo);
+                break;
+            case 2: //Cambiar destino
+                echo "Ingrese el nuevo destino: ";
+                $nuevoDestino = trim(fgets(STDIN));
+                $viaje->setDestino($nuevoDestino);
+                break;
+            case 3: //Cambiar cantidad maxima de pasajeros
+                echo "Ingrese la nueva cantidad maxima: ";
+                $nuevaCant = trim(fgets(STDIN));
+                $viaje->setCantMaxPasajeros($nuevaCant);
+                break;
+            case 4: //Cambiar informacion de pasajeros
+                echo "1) Cambiar todos los pasajeros.
+                2)Cambiar la informacion de un pasajero segun su documento.
+                Elija una opcion: ";
+                $rta = trim(fgets(STDIN));
+                if($rta==1){//Modifica todo el array de pasajeros
+                    $nuevoArrayPasajeros = cargarPasajeros($viaje->getCantMaxPasajeros());
+                    $viaje->setPasajeros($nuevoArrayPasajeros);
+                } elseif ($rta == 2){ //Modifica un pasajero especifico
+
+                } else {
+                    echo "Opcion incorrecta.\n";
+                }
+                break;
+            case 0;
+                break;
+            default:
+                echo "Opcion incorrecta.\n";
+        }
+    } while ($opcion != 0);
 }
 
 /**
@@ -86,7 +137,8 @@ do {
             $pasajeros = cargarPasajeros($cantMax);
             $viaje = new Viaje($codigo, $destino, $cantMax, $pasajeros);
             break;
-        case 2:
+        case 2: //Modificar datos
+            modificaciones($viaje);
             break;
         case 3:
             echo $viaje->__toString();

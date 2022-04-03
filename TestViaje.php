@@ -52,7 +52,7 @@ function modificaciones($viaje)
                 $viaje->setCantMaxPasajeros($nuevaCant);
                 break;
             case 4: //Cambiar informacion de pasajeros
-                echo "1) Cambiar todos los pasajeros.
+                echo "    1) Cambiar todos los pasajeros.
                 2)Cambiar la informacion de un pasajero segun su documento.
                 Elija una opcion: ";
                 $rta = trim(fgets(STDIN));
@@ -138,13 +138,23 @@ do {
             $viaje = new Viaje($codigo, $destino, $cantMax, $pasajeros);
             break;
         case 2: //Modificar datos
-            modificaciones($viaje);
+            if(isset($viaje)){
+                modificaciones($viaje);
+            } else {
+                echo "Todavia no se han cargado datos al viaje.\n";
+            }
+            
             break;
         case 3:
-            echo $viaje->__toString();
+            if(isset($viaje)){
+                echo $viaje->__toString();
+            } else {
+                echo "Todavia no se han cargado datos al viaje.\n";
+            }
             break;
         case 4:
             $viaje = new Viaje(1, "Mendoza", 10, $arrayPasajerosPrueba);
+            echo "Datos de prueba cargados.\n";
             break;
         case 0:
             break;

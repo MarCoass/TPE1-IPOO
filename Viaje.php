@@ -13,15 +13,17 @@ class Viaje
     private $codigo;
     private $destino;
     private $cantMaximaPasajeros;
-    private $pasajeros; //array de arrays asociativos
+    private $pasajeros; //array objetos Pasajero
+    private $objResponsableV; //objeto ResponsableV
 
     //FUNCION CONSTRUCTORA
-    public function __construct($codigo, $destino, $cantMax, $pasajeros)
+    public function __construct($codigo, $destino, $cantMax, $pasajeros, $responsable)
     {
         $this->codigo = $codigo;
         $this->destino = $destino;
         $this->cantMaximaPasajeros = $cantMax;
         $this->pasajeros = $pasajeros;
+        $this->objResponsableV = $responsable;
     }
 
     //FUNCIONES DE ACCESO
@@ -41,7 +43,6 @@ class Viaje
     {
         return $this->pasajeros;
     }
-
     public function setCodigo($valor)
     {
         $this->codigo = $valor;
@@ -58,6 +59,16 @@ class Viaje
     {
         $this->pasajeros = $valor;
     }
+    public function getObjResponsableV()
+    {
+        return $this->objResponsableV;
+    }
+    public function setObjResponsableV($objResponsableV)
+    {
+        $this->objResponsableV = $objResponsableV;
+    }
+
+    //Otros metodos
 
     /**
      * Funcion que dado un dni busca el pasajero cuyo dni coincida y retorna la posicion del array de pasajeros donde se encuentra.
@@ -65,70 +76,25 @@ class Viaje
      * @param int $dniPasajero
      * @return int
      */
-    private function buscarPasajeroPorDocumento($docPasajero)
+
+
+    public function buscarDni($dniBuscado)
     {
-        $pos = 0;
-        $largoArreglo = sizeOf($this->getPasajeros());
-        $encontrado = false;
-        while ($pos < $largoArreglo && !$encontrado) {
-            if ($this->getPasajeros()[$pos]["documento"] == $docPasajero) {
-                $encontrado = true;
-            } else {
-                $pos++;
+        $indice = -1;
+        $arrayPasajeros = $this->getPasajeros();
+        foreach ($arrayPasajeros as $pos => $pasajero) {
+            if ($pasajero->getNroDocumento() == $dniBuscado) {
+                $indice = $pos;
             }
         }
-        if (!$encontrado) {
-            $pos = -1;
-        }
-        return $pos;
+        return $indice;
     }
 
-
-    /**
-     * Funcion que pide el documento de un pasajero a modificar, en caso de que exista en el array se ofrecen opciones para cambiar sus datos,
-     * se pide el nuevo valor a asignar y se actualiza el dato, en caso de que no exista se muestra un mensaje de error.
-     */
-    public function modificarUnPasajero()
-    {
-        echo "Ingrese el documento del pasajero que desea modificar: ";
-        $doc = trim(fgets(STDIN));
-        $posPasajero = $this->buscarPasajeroPorDocumento($doc);
-        if ($doc == -1) {
-            echo "No se ha encontrado un pasajero con el documento n°: " . $doc . ".\n";
-        } else {
-            do {
-                echo "Dato a modificar: 
-                    1) Nombre.
-                    2) Apellido. 
-                    3) Documento.
-                    0) Volver atras.
-                Elija una opcion: ";
-                $opcion = trim(fgets(STDIN));
-                switch ($opcion) {
-                    case 1:
-                        echo "Ingrese el nuevo nombre: ";
-                        $nuevoNombre = trim(fgets(STDIN));
-                        $this->getPasajeros()[$posPasajero]["nombre"] = $nuevoNombre;
-                        break;
-                    case 2:
-                        echo "Ingrese el nuevo apellido: ";
-                        $nuevoApellido = trim(fgets(STDIN));
-                        $this->getPasajeros()[$posPasajero]["apellido"] = $nuevoApellido;
-                        break;
-                    case 3:
-                        echo "Ingrese el nuevo documento: ";
-                        $nuevoDoc = trim(fgets(STDIN));
-                        $this->getPasajeros()[$posPasajero]["documento"] = $nuevoDoc;
-                        break;
-                    case 0:
-                        break;
-                    default:
-                        echo "Opcion incorrecta.\n";
-                }
-            } while ($opcion != 0);
-        }
+    public function agregarPasajero($nuevoPasajero){
+        $array = $this->getPasajeros();
+        array_push($array, $nuevoPasajero);
+        $this->setPasajeros($array);
     }
-
 
     /**
      * Funcion que retorna una cadena de texto con todos los atributos del objeto
@@ -136,14 +102,25 @@ class Viaje
      */
     public function __toString()
     {
+        $arrayPasajeros = $this->getPasajeros();
+        $responsable = $this->getObjResponsableV();
         $cadena = "Codigo: " . $this->getCodigo() .
             "\nDestino: " . $this->getDestino() .
             "\nCantidad maxima de pasajeros: " . $this->getCantMaxPasajeros() .
-            "\nPasajeros: \n";
-        foreach ($this->getPasajeros() as $pasajero) {
-            $infoPasajero = "Nombre: " . $pasajero["nombre"] . ". Apellido: " . $pasajero["apellido"] . ". Nro Documento: " . $pasajero["documento"] . "\n";
-            $cadena = $cadena . $infoPasajero;
-        }
+            "\nPasajeros: \n" . $this->mostrarPasajeros() . "\n";
+            
         return $cadena;
+    }
+
+    public function mostrarPasajeros()
+    {
+        $coleccion = $this->getPasajeros();
+        $pasajeros = "";
+
+        for ($i = 0; $i < count($coleccion); $i++) {
+            $personas = $coleccion[$i];
+            $pasajeros = $pasajeros . $personas->__toString() . "\n";
+        }
+        return $pasajeros;
     }
 }

@@ -23,17 +23,30 @@ function mostrarMenuPrincipal()
  */
 function mostrarMenuModificaciones()
 {
+
     echo "------------Modificaciones-------------:
         1) Cambiar codigo.
         2) Cambiar destino.
         3) Cambiar cantidad maxima de pasajeros.
-        4) Cambiar informacion de pasajeros.
+        4) Cambiar importe.
+        5) Cambiar si tiene ida y vuelta.
+        6) Cambiar informacion de pasajeros.
+        7) Cambiar informacion del responsable.
+        // Opciones solo disponibles para viajes aereos:
+        8) Cambiar numero de vuelo.
+        9) Cambiar categoria de asiento.
+        10) Cambiar nombre de aerolinea.
+        11) Cambiar cantidad de escalas.
+        //Opciones solo disponibles para viajes terrestres:
+        12) Cambiar tipo de comodidad.
+        //
         0) Volver a menu principal.
     Elija una opcion: ";
 }
 
 function modificaciones($viaje)
 {
+    $esAereo = is_a($viaje, 'Aereo');
     do {
         mostrarMenuModificaciones();
         $opcion = trim(fgets(STDIN));
@@ -67,6 +80,22 @@ function modificaciones($viaje)
                 } else {
                     echo "Opcion incorrecta.\n";
                 }
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+            case 10:
+                break;
+            case 11:
+                break;
+            case 12:
                 break;
             case 0;
                 break;
@@ -182,13 +211,34 @@ function cargarDatosViaje()
     $responsable = cargarDatosResponsable();
     echo "Ingrese la cantidad maxima de pasajeros: ";
     $cantMax = trim(fgets(STDIN));
+    echo "Es ida y vuelta? (s/n): ";
+    $rta = trim(fgets(STDIN));
+    echo "Ingrese el importe: ";
+    $importe = trim(fgets(STDIN));
+    echo "Tipo de viaje: 'a'->aereo, 't'->terrestre";
+    $tipo = trim(fgets(STDIN));
     $pasajeros = [];
-    $viaje = new Viaje($codigo, $destino, $cantMax, $pasajeros, $responsable);
-    cargarPasajeros($cantMax , $viaje);
+    if ($tipo == 'a') {
+        echo "Ingrese el numero de vuelo: ";
+        $nrovuelo = trim(fgets(STDIN));
+        echo "Ingrese la categoria de asiento:";
+        $categoria = trim(fgets(STDIN));
+        echo "Ingrese el nombre de la aerolineas:";
+        $aerolinea = trim(fgets(STDIN));
+        echo "Ingrese la cantidad de escalas: ";
+        $escalas = trim(fgets(STDIN));
+        $viaje = new Aereo($codigo, $destino, $cantMax, $pasajeros, $responsable, $rta == "s", $importe, $nrovuelo, $categoria, $aerolinea, $escalas);
+    } elseif ($tipo == 't') {
+        echo "Ingrese el tipo de comodidad: ";
+        $comodidad = trim(fgets(STDIN));
+        $viaje = new Terreste($codigo, $destino, $cantMax, $pasajeros, $responsable, $rta == "s", $importe, $comodidad);
+    }
+    cargarPasajeros($cantMax, $viaje);
     return $viaje;
 }
 
-function cargarDatosResponsable(){
+function cargarDatosResponsable()
+{
     echo "Ingrese el nombre del responsable: ";
     $nombre = trim(fgets(STDIN));
     echo "Ingrese el apellido: ";
@@ -228,10 +278,11 @@ function cargarPasajeros($cantMax, $viaje)
     return $array;
 }
 
-function cargarDatosPasajero($viaje){
+function cargarDatosPasajero($viaje)
+{
     echo "Ingrese el numero de documento: ";
     $dni = trim(fgets(STDIN));
-    if($viaje->buscarDni($dni) == -1){//Si == -1, no existe un pasajero con este dni 
+    if ($viaje->buscarDni($dni) == -1) { //Si == -1, no existe un pasajero con este dni 
         echo "Ingrese el nombre: ";
         $nombre = trim(fgets(STDIN));
         echo "Ingrese el apellido: ";
@@ -240,13 +291,13 @@ function cargarDatosPasajero($viaje){
         $nroTelefono = trim(fgets(STDIN));
         $nuevoPasajero = new Pasajero($nombre, $apellido, $dni, $nroTelefono);
         $viaje->agregarPasajero($nuevoPasajero);
-    }
-    else {
+    } else {
         echo "Ya existe un pasajero con este dni.";
     }
 }
 
-function crearArrayPasajerosDePrueba(){
+function crearArrayPasajerosDePrueba()
+{
     $p1 = new Pasajero("Mar", "Coass", 42969186, 42969186);
     $p2 = new Pasajero("Pedro", "Perez", 22349753, 22349753);
     $p3 = new Pasajero("Laura", "Gomez", 31794186, 31794186);
@@ -284,7 +335,7 @@ do {
         case 4:
             $responsable = [1, 2, "Juan", "Pedro"];
             $arrayPasajerosPrueba = crearArrayPasajerosDePrueba();
-            $viaje = new Viaje(1, "Mendoza", 10, $arrayPasajerosPrueba, $responsable);
+            $viajeTerrestre = new Terreste(1, "Mendoza", 10, $arrayPasajerosPrueba, $responsable, true, 1000, "cama");
             echo "Datos de prueba cargados.\n";
             break;
         case 0:

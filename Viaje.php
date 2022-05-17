@@ -18,15 +18,19 @@ class Viaje
     private $cantMaximaPasajeros;
     private $pasajeros; //array objetos Pasajero
     private $objResponsableV; //objeto ResponsableV
+    private $idaYvuelta;
+    private $importe;
 
     //FUNCION CONSTRUCTORA
-    public function __construct($codigo, $destino, $cantMax, $pasajeros, $responsable)
+    public function __construct($codigo, $destino, $cantMax, $pasajeros, $responsable, $idaYvuelta, $importe)
     {
         $this->codigo = $codigo;
         $this->destino = $destino;
         $this->cantMaximaPasajeros = $cantMax;
         $this->pasajeros = $pasajeros;
         $this->objResponsableV = $responsable;
+        $this->idaYvuelta = $idaYvuelta;
+        $this->importe = $importe;
     }
 
     //FUNCIONES DE ACCESO
@@ -70,7 +74,22 @@ class Viaje
     {
         $this->objResponsableV = $objResponsableV;
     }
+    
+    public function getIdaYvuelta(){
+        return $this->idaYvuelta;
+    }
 
+    public function setIdaYvuelta($idaYvuelta){
+        $this->idaYvuelta = $idaYvuelta;
+    }
+    
+    public function getImporte(){
+        return $this->importe;
+}
+
+public function setImporte($importe){
+        $this->importe = $importe;
+}
     //Otros metodos
 
     /**
@@ -105,11 +124,15 @@ class Viaje
      */
     public function __toString()
     {
+        $esIdayVuelta = $this->getIdaYvuelta()? "Si." : "No.";
         $arrayPasajeros = $this->getPasajeros();
         $responsable = $this->getObjResponsableV();
         $cadena = "Codigo: " . $this->getCodigo() .
             "\nDestino: " . $this->getDestino() .
+            "\n¿Tiene ida y vuelta?: " . $esIdayVuelta .
+            "\nImporte: " . $this->getImporte() .
             "\nCantidad maxima de pasajeros: " . $this->getCantMaxPasajeros() .
+            "\nResponsable: \n" . $this->getObjResponsableV() . 
             "\nPasajeros: \n" . $this->mostrarPasajeros() . "\n";
             
         return $cadena;
@@ -126,4 +149,14 @@ class Viaje
         }
         return $pasajeros;
     }
+
+    /**
+     * Funcion que retorna true o false segun si queda pasajes disponibles
+     */
+    public function hayPasajesDisponibles(){
+        $cantPasajerosActual = count($this->getPasajeros());
+        return $cantPasajerosActual<$this->getCantMaxPasajeros();
+    }
+
+    
 }
